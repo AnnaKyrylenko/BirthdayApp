@@ -14,19 +14,29 @@ enum AgeLimits {
     static let monthsPerYear: Int = 12
 }
 
+protocol CameraDelegate: AnyObject {
+    func showCamera()
+}
+
 @MainActor
 @Observable
 class QuestionnaireViewModel {
     struct State: Equatable {
         var appName: String?
         var childName: String?
-        var birthdayPhoto: Image?
         var birthdayDate: Date
         var birthdayCardGenerationIsAvailable: Bool { !(childName?.isEmpty ?? true) }
+        
         var navigationDestination: State.NavigationDestination?
         enum NavigationDestination {
             case birthdayCard
         }
+        
+        var fullScreenCover: FullScreenCover? = nil
+        enum FullScreenCover {
+            case camera
+        }
+        
         var error: StateError?
         
         enum StateError: Error, Equatable {
@@ -36,13 +46,11 @@ class QuestionnaireViewModel {
         
         init(appName: String?,
              childName: String? = nil,
-             birthdayPhoto: Image? = nil,
              birthdayDate: Date = Date.now,
              navigationDestination: State.NavigationDestination? = nil,
              error: StateError? = nil) {
             self.appName = appName
             self.childName = childName
-            self.birthdayPhoto = birthdayPhoto
             self.birthdayDate = birthdayDate
             self.navigationDestination = navigationDestination
             self.error = error
@@ -51,8 +59,12 @@ class QuestionnaireViewModel {
     
     private(set) var state: State
     
+    var birthdayPhotoViewModel: BirthdayPhotoViewModel?
+    
     init(state: State) {
         self.state = state
+        self.birthdayPhotoViewModel = BirthdayPhotoViewModel(state: .init(birthdayPhoto: nil),
+                                                             cameraDelegate: self)
     }
     
     func generateBirthdayCard() {
@@ -77,7 +89,7 @@ class QuestionnaireViewModel {
 
 extension QuestionnaireViewModel {
     func setNewBirthdayPhoto(_ newValue: Image?) {
-        self.state.birthdayPhoto = newValue
+        birthdayPhotoViewModel?.setNewBirthdayPhoto(newValue)
     }
     
     func setChildName(_ newValue: String) {
@@ -86,5 +98,38 @@ extension QuestionnaireViewModel {
     
     func setBirthdayDate(_ newValue: Date) {
         self.state.birthdayDate = newValue
+    }
+    
+    func onUpdateSelectedFullScreen(isPresented: Bool) {
+        if !isPresented {
+            dismissSelectedSheet()
+        }
+    }
+}
+
+//MARK: FullScreenCover
+extension QuestionnaireViewModel {
+    
+    func openCameraFullScreen() {
+        Task {
+            guard state.fullScreenCover == nil else { return }
+            state.fullScreenCover = .camera
+        }
+    }
+    
+    private func dismissSelectedSheet() {
+        guard let fullScreenCover = state.fullScreenCover else { return }
+        switch fullScreenCover {
+        case .camera:
+            //MARK: Handle specific action on dismiss camera there
+            break
+        }
+        state.fullScreenCover = nil
+    }
+}
+
+extension QuestionnaireViewModel: @preconcurrency CameraDelegate {
+    func showCamera() {
+        openCameraFullScreen()
     }
 }
