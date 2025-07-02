@@ -94,7 +94,8 @@ class QuestionnaireViewModel {
         return BirthdayCardViewModel(state: .init(baby: Baby(name: state.childName ?? "",
                                                              ageInMonth: state.birthdayDate.ageInMonths,
                                                              photo: birthdayPhotoViewModel?.state.birthdayPhoto
-                                                            )))
+                                                            )),
+                                     delegate: self)
     }
 }
 

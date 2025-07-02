@@ -65,6 +65,16 @@ class BirthdayCardViewModel {
             }
         }
         
+        var cameraImage: Image {
+            switch self {
+            case .blue:
+                return Image("camera_blue")
+            case .green:
+                return Image("camera_green")
+            case .yellow:
+                return Image("camera_yellow")
+            }
+        }
     }
     struct State {
         var selectedTheme: Theme = { Theme.allCases.randomElement() ?? .blue }()
@@ -76,9 +86,16 @@ class BirthdayCardViewModel {
     }
     
     private(set) var state: State
+    weak var delegate: CameraDelegate?
     
-    init(state: State) {
+    init(state: State,
+         delegate: CameraDelegate?) {
         self.state = state
+        self.delegate = delegate
+    }
+    
+    func shareImage() {
+        
     }
     
     func configureBabyInfoViewModel() -> BabyInfoViewModel {
@@ -88,6 +105,7 @@ class BirthdayCardViewModel {
     
     func configureBabyPhotoViewModel() -> BabyPhotoViewModel {
         return BabyPhotoViewModel(state: .init(theme: state.selectedTheme,
-                                               babyPhoto: state.baby.photo))
+                                               babyPhoto: state.baby.photo),
+                                  delegate: delegate)
     }
 }

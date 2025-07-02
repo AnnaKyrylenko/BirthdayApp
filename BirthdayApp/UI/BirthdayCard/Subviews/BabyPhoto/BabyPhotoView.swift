@@ -14,6 +14,17 @@ struct BabyPhotoView: View {
             viewModel.state.theme.placeholderImage
                 .resizable()
                 .scaledToFit()
+                .background {
+                    GeometryReader { geometry in
+                        Color.clear
+                            .onAppear {
+                                viewModel.setCircleRadius(geometry.size.height / 2)
+                            }
+                            .onChange(of: geometry.size.height) { _, newValue in
+                                viewModel.setCircleRadius(newValue / 2)
+                            }
+                    }
+                }
             if let babyPhoto = viewModel.state.babyPhoto {
                 babyPhoto
                     .resizable()
@@ -22,9 +33,29 @@ struct BabyPhotoView: View {
             }
             Circle()
                 .stroke(viewModel.state.theme.borderColor,
-                        lineWidth: 7)
-                
+                        lineWidth: Constants.borderWidth)
+            viewModel.state.theme.cameraImage
+                .resizable()
+                .scaledToFit()
+                .frame(width: Constants.cameraImageSideLengthg,
+                       height: Constants.cameraImageSideLengthg)
+                .position(viewModel.cameraIconPosition(angle: Constants.cameraAnglePosition))
+            
         }
-        .frame(width: 220, height: 220)
+        .frame(width: Constants.circleDiametr,
+               height: Constants.circleDiametr)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            viewModel.openCamera()
+        }
+    }
+}
+
+extension BabyPhotoView {
+    enum Constants {
+        static let cameraImageSideLengthg: CGFloat = 36
+        static let cameraAnglePosition: CGFloat = 45
+        static let borderWidth: CGFloat = 7
+        static let circleDiametr: CGFloat = 220
     }
 }
