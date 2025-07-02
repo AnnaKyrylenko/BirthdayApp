@@ -89,6 +89,13 @@ class QuestionnaireViewModel {
             state.navigationDestination = nil
         }
     }
+    
+    func generateBirthdayCardViewModel() -> BirthdayCardViewModel {
+        return BirthdayCardViewModel(state: .init(baby: Baby(name: state.childName ?? "",
+                                                             ageInMonth: state.birthdayDate.ageInMonths,
+                                                             photo: birthdayPhotoViewModel?.state.birthdayPhoto
+                                                            )))
+    }
 }
 
 extension QuestionnaireViewModel {

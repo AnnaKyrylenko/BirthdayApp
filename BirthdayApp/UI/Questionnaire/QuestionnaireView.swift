@@ -61,7 +61,7 @@ struct QuestionnaireView: View {
             }) {
                 switch viewModel.state.navigationDestination {
                 case .birthdayCard:
-                    Text("Birthday card")
+                    BirthdayCardView(viewModel: viewModel.generateBirthdayCardViewModel())
                 case .none:
                     Text("Birthday card error")
                 }
