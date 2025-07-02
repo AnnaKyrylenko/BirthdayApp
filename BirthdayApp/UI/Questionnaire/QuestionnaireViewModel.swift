@@ -25,7 +25,7 @@ class QuestionnaireViewModel {
         var appName: String?
         var childName: String?
         var birthdayDate: Date
-        var birthdayCardGenerationIsAvailable: Bool { !(childName?.isEmpty ?? true) }
+        var birthdayCardGenerationIsAvailable: Bool { !(childName?.isEmpty ?? true) && checkSelectedBirthDateIsValid() }
         
         var navigationDestination: State.NavigationDestination?
         enum NavigationDestination {
@@ -55,6 +55,11 @@ class QuestionnaireViewModel {
             self.navigationDestination = navigationDestination
             self.error = error
         }
+        
+        fileprivate func checkSelectedBirthDateIsValid() -> Bool {
+            return birthdayDate.ageInMonths <= AgeLimits.maximumAgeInYears * AgeLimits.monthsPerYear &&
+            birthdayDate.ageInMonths >= AgeLimits.minimumAgeInMonths
+        }
     }
     
     private(set) var state: State
@@ -72,8 +77,7 @@ class QuestionnaireViewModel {
             state.error = .emptyChildName
             return
         }
-        guard state.birthdayDate.ageInMonths < AgeLimits.maximumAgeInYears * AgeLimits.monthsPerYear &&
-                state.birthdayDate.ageInMonths > AgeLimits.minimumAgeInMonths else {
+        guard state.checkSelectedBirthDateIsValid() else {
             state.error = .ageIsInWrongRange
             return
         }
