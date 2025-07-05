@@ -14,36 +14,14 @@ struct BirthdayCardView: View {
         ZStack {
             viewModel.state.selectedTheme.backgroundColor
                 .ignoresSafeArea()
-            VStack(spacing: Constants.babyPhotoStackPadding) {
-                BabyPhotoView(viewModel: viewModel.configureBabyPhotoViewModel())
-                
-            }
+            contentBuilder(isDisplayBabyPhoto: true)
             viewModel.state.selectedTheme.maskImage
                 .resizable()
                 .scaledToFill()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .edgesIgnoringSafeArea(.bottom)
                 .allowsHitTesting(false)
-            VStack {
-                BabyInfoView(viewModel: viewModel.configureBabyInfoViewModel())
-                Spacer()
-                Image(.nanitLabel)
-                Button {
-                    viewModel.shareImage()
-                } label: {
-                    HStack(spacing: .zero) {
-                        Text(StringConstants.shareTheNews)
-                        Image(.icShare)
-                    }
-                    .padding(.horizontal, Constants.shareButtonTextHorizontalPadding)
-                    .frame(height: Constants.shareButtonHeight)
-                    .foregroundStyle(Color.white)
-                    .background(Color.mainButton)
-                    .clipShape(Capsule())
-                }
-                .padding(.vertical, Constants.shareButtonVerticalPadding)
-            }
-            .padding(.top, Constants.appInfoTopPadding)
+            contentBuilder(isDisplayBabyPhoto: false)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -54,6 +32,35 @@ struct BirthdayCardView: View {
                     Image(.icBack)
                 }
             }
+        }
+    }
+    
+    func contentBuilder(isDisplayBabyPhoto: Bool) -> some View {
+        VStack(spacing: 0) {
+            Spacer(minLength: 20)
+            BabyInfoView(viewModel: viewModel.configureBabyInfoViewModel())
+                .opacity(isDisplayBabyPhoto ? 0 : 1)
+            Spacer(minLength: 20)
+            BabyPhotoView(viewModel: viewModel.configureBabyPhotoViewModel())
+                .opacity(isDisplayBabyPhoto ? 1 : 0)
+            Image(.nanitLabel)
+                .opacity(isDisplayBabyPhoto ? 0 : 1)
+                .padding(.top, 15)
+            Button {
+                viewModel.shareImage()
+            } label: {
+                HStack(spacing: .zero) {
+                    Text(StringConstants.shareTheNews)
+                    Image(.icShare)
+                }
+                .padding(.horizontal, Constants.shareButtonTextHorizontalPadding)
+                .frame(height: Constants.shareButtonHeight)
+                .foregroundStyle(Color.white)
+                .background(Color.mainButton)
+                .clipShape(Capsule())
+            }
+            .opacity(isDisplayBabyPhoto ? 0 : 1)
+            .padding(.vertical, Constants.shareButtonVerticalPadding)
         }
     }
 }
