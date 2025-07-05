@@ -87,6 +87,7 @@ class BirthdayCardViewModel {
     
     private(set) var state: State
     weak var delegate: CameraDelegate?
+    var babyPhotoViewModel: BabyPhotoViewModel?
     
     init(state: State,
          delegate: CameraDelegate?) {
@@ -104,8 +105,18 @@ class BirthdayCardViewModel {
     }
     
     func configureBabyPhotoViewModel() -> BabyPhotoViewModel {
-        return BabyPhotoViewModel(state: .init(theme: state.selectedTheme,
-                                               babyPhoto: state.baby.photo),
-                                  delegate: delegate)
+        if let babyPhotoViewModel {
+            return babyPhotoViewModel
+        } else {
+            babyPhotoViewModel = BabyPhotoViewModel(state: .init(theme: state.selectedTheme,
+                                                                 babyPhoto: state.baby.photo),
+                                                    delegate: delegate)
+            return babyPhotoViewModel ?? BabyPhotoViewModel(state: .init(theme: .blue),
+                                                            delegate: nil)
+        }
+    }
+    
+    func setNewPhoto(_ photo: Image?) {
+        babyPhotoViewModel?.setBabyPhoto(photo)
     }
 }

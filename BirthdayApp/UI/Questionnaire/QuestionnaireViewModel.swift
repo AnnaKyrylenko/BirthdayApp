@@ -65,6 +65,7 @@ class QuestionnaireViewModel {
     private(set) var state: State
     
     var birthdayPhotoViewModel: BirthdayPhotoViewModel?
+    var birthdayCardViewModel: BirthdayCardViewModel?
     
     init(state: State) {
         self.state = state
@@ -91,17 +92,25 @@ class QuestionnaireViewModel {
     }
     
     func generateBirthdayCardViewModel() -> BirthdayCardViewModel {
-        return BirthdayCardViewModel(state: .init(baby: Baby(name: state.childName ?? "",
-                                                             ageInMonth: state.birthdayDate.ageInMonths,
-                                                             photo: birthdayPhotoViewModel?.state.birthdayPhoto
-                                                            )),
-                                     delegate: self)
+        if let birthdayCardViewModel {
+            return birthdayCardViewModel
+        } else {
+            birthdayCardViewModel = BirthdayCardViewModel(state: .init(baby: Baby(name: state.childName ?? "",
+                                                                 ageInMonth: state.birthdayDate.ageInMonths,
+                                                                 photo: birthdayPhotoViewModel?.state.birthdayPhoto
+                                                                )),
+                                         delegate: self)
+            return birthdayCardViewModel ?? .init(state: .init(baby: Baby(name: "Default Baby",
+                                                                          ageInMonth: -1)),
+                                                  delegate: nil)
+        }
     }
 }
 
 extension QuestionnaireViewModel {
     func setNewBirthdayPhoto(_ newValue: Image?) {
         birthdayPhotoViewModel?.setNewBirthdayPhoto(newValue)
+        birthdayCardViewModel?.setNewPhoto(newValue)
     }
     
     func setChildName(_ newValue: String) {

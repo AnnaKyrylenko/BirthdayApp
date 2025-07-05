@@ -29,12 +29,15 @@ class BabyPhotoViewModel {
         let radians = angle * .pi / 180
         let x = state.circleRadius * cos(radians)
         let y = state.circleRadius * sin(radians)
-        print("🥳", CGPoint(x: state.circleRadius + x, y: state.circleRadius - y))
         return CGPoint(x: state.circleRadius + x, y: state.circleRadius - y)
     }
     
     func setCircleRadius(_ radius: CGFloat) {
         state.circleRadius = radius
+    }
+    
+    func setBabyPhoto(_ photo: Image?) {
+        state.babyPhoto = photo
     }
     
     func openCamera() {
