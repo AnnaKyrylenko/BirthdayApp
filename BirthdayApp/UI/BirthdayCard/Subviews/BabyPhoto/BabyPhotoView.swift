@@ -11,25 +11,31 @@ struct BabyPhotoView: View {
     @State var viewModel: BabyPhotoViewModel
     var body: some View {
         ZStack {
-            viewModel.state.theme.placeholderImage
-                .resizable()
-                .scaledToFit()
-                .background {
-                    GeometryReader { geometry in
-                        Color.clear
-                            .onAppear {
-                                viewModel.setCircleRadius(geometry.size.height / 2)
-                            }
-                            .onChange(of: geometry.size.height) { _, newValue in
-                                viewModel.setCircleRadius(newValue / 2)
-                            }
-                    }
+            Group {
+                if let babyPhoto = viewModel.state.babyPhoto {
+                    babyPhoto
+                        .resizable()
+                        .scaledToFill()
+                        .clipShape(Circle())
+                } else {
+                    viewModel.state.theme.placeholderImage
+                        .resizable()
+                        .scaledToFit()
                 }
-            if let babyPhoto = viewModel.state.babyPhoto {
-                babyPhoto
-                    .resizable()
-                    .scaledToFill()
-                    .clipShape(Circle())
+            }
+            .frame(width: Constants.circleDiametr,
+                   height: Constants.circleDiametr)
+            .clipped()
+            .background {
+                GeometryReader { geometry in
+                    Color.clear
+                        .onAppear {
+                            viewModel.setCircleRadius(geometry.size.height / 2)
+                        }
+                        .onChange(of: geometry.size.height) { _, newValue in
+                            viewModel.setCircleRadius(newValue / 2)
+                        }
+                }
             }
             Circle()
                 .stroke(viewModel.state.theme.borderColor,
