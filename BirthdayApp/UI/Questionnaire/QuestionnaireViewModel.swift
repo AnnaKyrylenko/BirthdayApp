@@ -29,7 +29,7 @@ class QuestionnaireViewModel {
         var appName: String?
         var childName: String?
         var birthdayDate: Date
-        var birthdayCardGenerationIsAvailable: Bool { !(childName?.isEmpty ?? true) && checkSelectedBirthDateIsValid() }
+        var birthdayCardGenerationIsAvailable: Bool { !(childName?.isEmpty ?? true) }
         
         var navigationDestination: State.NavigationDestination?
         enum NavigationDestination {
@@ -42,7 +42,7 @@ class QuestionnaireViewModel {
         }
         
         var sheet: Sheet? = nil
-        //TODO: Make it ANY
+        
         enum Sheet: Equatable {
             case shareSheet(item: UIImage)
         }

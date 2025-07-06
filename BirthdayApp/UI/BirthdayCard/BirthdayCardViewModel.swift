@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Baby {
+struct Baby: Equatable {
     var name: String
     var ageInMonth: Int
     var photo: Image?
@@ -16,7 +16,7 @@ struct Baby {
 @MainActor
 @Observable
 class BirthdayCardViewModel {
-    enum Theme: CaseIterable {
+    enum Theme: CaseIterable, Equatable {
         case blue
         case green
         case yellow
@@ -76,7 +76,7 @@ class BirthdayCardViewModel {
             }
         }
     }
-    struct State {
+    struct State: Equatable {
         var selectedTheme: Theme = { Theme.allCases.randomElement() ?? .blue }()
         var baby: Baby
         var isNeedToHideShareButton: Bool = false

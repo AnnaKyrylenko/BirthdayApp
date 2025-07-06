@@ -82,14 +82,16 @@ struct BirthdayAppTests {
     }
 
     @MainActor @Test func testSetNewBirthdayPhoto() {
-        let appName = "App Name"
         let image: Image = Image(uiImage: UIImage())
-        var viewModelState = QuestionnaireViewModel.State.init(appName: appName)
-        let questionnaireViewModel = QuestionnaireViewModel(state: viewModelState)
-        viewModelState.birthdayPhoto = image
-        questionnaireViewModel.setNewBirthdayPhoto(image)
+        var viewModelState = BirthdayCardViewModel.State.init(baby: Baby(name: "Test",
+                                                                         ageInMonth: 1,
+                                                                        photo: image))
+        let birthdayCardViewModel = BirthdayCardViewModel(state: viewModelState,
+                                                          cameraDelegate: nil,
+                                                          shareDelegate: nil)
+        viewModelState.baby.photo = image
         
-        #expect(questionnaireViewModel.state == viewModelState)
+        #expect(birthdayCardViewModel.state == viewModelState)
     }
     
     @MainActor @Test func testSetChildName() {
