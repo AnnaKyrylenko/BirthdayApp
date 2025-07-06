@@ -18,6 +18,10 @@ protocol CameraDelegate: AnyObject {
     func showCamera()
 }
 
+protocol ShareDelegate: AnyObject {
+    func shareSnapshot(_ snapshot: UIImage)
+}
+
 @MainActor
 @Observable
 class QuestionnaireViewModel {
@@ -35,6 +39,12 @@ class QuestionnaireViewModel {
         var fullScreenCover: FullScreenCover? = nil
         enum FullScreenCover {
             case camera
+        }
+        
+        var sheet: Sheet? = nil
+        //TODO: Make it ANY
+        enum Sheet: Equatable {
+            case shareSheet(item: UIImage)
         }
         
         var error: StateError?
@@ -99,10 +109,12 @@ class QuestionnaireViewModel {
                                                                  ageInMonth: state.birthdayDate.ageInMonths,
                                                                  photo: birthdayPhotoViewModel?.state.birthdayPhoto
                                                                 )),
-                                         delegate: self)
+                                                          cameraDelegate: self,
+                                                          shareDelegate: self)
             return birthdayCardViewModel ?? .init(state: .init(baby: Baby(name: "Default Baby",
                                                                           ageInMonth: -1)),
-                                                  delegate: nil)
+                                                  cameraDelegate: nil,
+                                                  shareDelegate: nil)
         }
     }
 }
@@ -123,6 +135,12 @@ extension QuestionnaireViewModel {
     
     func onUpdateSelectedFullScreen(isPresented: Bool) {
         if !isPresented {
+            dismissSelectedFullScreenCover()
+        }
+    }
+    
+    func onUpdateSelectedSheet(isPresented: Bool) {
+        if !isPresented {
             dismissSelectedSheet()
         }
     }
@@ -138,7 +156,7 @@ extension QuestionnaireViewModel {
         }
     }
     
-    private func dismissSelectedSheet() {
+    private func dismissSelectedFullScreenCover() {
         guard let fullScreenCover = state.fullScreenCover else { return }
         switch fullScreenCover {
         case .camera:
@@ -149,8 +167,35 @@ extension QuestionnaireViewModel {
     }
 }
 
+//MARK: Sheet
+extension QuestionnaireViewModel {
+    
+    func openShareSheet(item: UIImage) {
+        Task {
+            guard state.sheet == nil else { return }
+            state.sheet = .shareSheet(item: item)
+        }
+    }
+    
+    private func dismissSelectedSheet() {
+        guard let sheet = state.sheet else { return }
+        switch sheet {
+        case .shareSheet:
+            //MARK: Handle specific action on dismiss camera there
+            break
+        }
+        state.sheet = nil
+    }
+}
+
 extension QuestionnaireViewModel: @preconcurrency CameraDelegate {
     func showCamera() {
         openCameraFullScreen()
+    }
+}
+
+extension QuestionnaireViewModel: @preconcurrency ShareDelegate {
+    func shareSnapshot(_ snapshot: UIImage) {
+        openShareSheet(item: snapshot)
     }
 }

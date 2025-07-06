@@ -43,6 +43,7 @@ struct BabyPhotoView: View {
             viewModel.state.theme.cameraImage
                 .resizable()
                 .scaledToFit()
+                .opacity(viewModel.state.isCameraIconVisible ? 1 : 0)
                 .frame(width: Constants.cameraImageSideLengthg,
                        height: Constants.cameraImageSideLengthg)
                 .position(viewModel.cameraIconPosition(angle: Constants.cameraAnglePosition))

@@ -14,6 +14,7 @@ class BabyPhotoViewModel {
         var circleRadius: CGFloat = .zero
         var theme: BirthdayCardViewModel.Theme
         var babyPhoto: Image?
+        var isCameraIconVisible: Bool = true
     }
     
     private(set) var state: State
@@ -38,6 +39,10 @@ class BabyPhotoViewModel {
     
     func setBabyPhoto(_ photo: Image?) {
         state.babyPhoto = photo
+    }
+    
+    func setIsCameraIconVisible(_ visible: Bool) {
+        state.isCameraIconVisible = visible
     }
     
     func openCamera() {

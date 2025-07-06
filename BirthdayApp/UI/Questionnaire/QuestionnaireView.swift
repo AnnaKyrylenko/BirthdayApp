@@ -66,6 +66,18 @@ struct QuestionnaireView: View {
                     Text("Birthday card error")
                 }
             }
+            .sheet(isPresented: Binding(get: {
+                viewModel.state.sheet != nil
+            }, set: { isPresented in
+                viewModel.onUpdateSelectedSheet(isPresented: isPresented)
+            })) {
+                switch viewModel.state.sheet {
+                case .shareSheet(let item):
+                    ShareSheet(activityItem: item)
+                case .none:
+                    Text("How you did open it?")
+                }
+            }
             .fullScreenCover(isPresented: Binding(get: {
                 viewModel.state.fullScreenCover != nil
             }, set: { isPresented in

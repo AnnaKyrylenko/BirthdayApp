@@ -79,6 +79,7 @@ class BirthdayCardViewModel {
     struct State {
         var selectedTheme: Theme = { Theme.allCases.randomElement() ?? .blue }()
         var baby: Baby
+        var viewSize: CGSize = .zero
         
         init(baby: Baby) {
             self.baby = baby
@@ -86,17 +87,17 @@ class BirthdayCardViewModel {
     }
     
     private(set) var state: State
-    weak var delegate: CameraDelegate?
+    weak var cameraDelegate: CameraDelegate?
+    weak var shareDelegate: ShareDelegate?
+    
     var babyPhotoViewModel: BabyPhotoViewModel?
     
     init(state: State,
-         delegate: CameraDelegate?) {
+         cameraDelegate: CameraDelegate?,
+         shareDelegate: ShareDelegate?) {
         self.state = state
-        self.delegate = delegate
-    }
-    
-    func shareImage() {
-        
+        self.cameraDelegate = cameraDelegate
+        self.shareDelegate = shareDelegate
     }
     
     func configureBabyInfoViewModel() -> BabyInfoViewModel {
@@ -110,13 +111,26 @@ class BirthdayCardViewModel {
         } else {
             babyPhotoViewModel = BabyPhotoViewModel(state: .init(theme: state.selectedTheme,
                                                                  babyPhoto: state.baby.photo),
-                                                    delegate: delegate)
+                                                    delegate: cameraDelegate)
             return babyPhotoViewModel ?? BabyPhotoViewModel(state: .init(theme: .blue),
                                                             delegate: nil)
         }
     }
     
+    func shareSnapshot(snapshot: UIImage) {
+        
+        shareDelegate?.shareSnapshot(snapshot)
+    }
+    
+    func setCameraButtonVisible(_ visible: Bool) {
+        babyPhotoViewModel?.setIsCameraIconVisible(visible)
+    }
+    
     func setNewPhoto(_ photo: Image?) {
         babyPhotoViewModel?.setBabyPhoto(photo)
+    }
+    
+    func setSize(_ size: CGSize) {
+        state.viewSize = size
     }
 }

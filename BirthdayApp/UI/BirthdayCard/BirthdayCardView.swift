@@ -11,17 +11,18 @@ struct BirthdayCardView: View {
     @Environment(\.dismiss) var dismiss
     @State var viewModel: BirthdayCardViewModel
     var body: some View {
-        ZStack {
+        ZStack(alignment: .bottom) {
             viewModel.state.selectedTheme.backgroundColor
-                .ignoresSafeArea()
+                .layoutPriority(0)
             contentBuilder(isDisplayBabyPhoto: true)
+                .layoutPriority(1)
             viewModel.state.selectedTheme.maskImage
                 .resizable()
-                .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .edgesIgnoringSafeArea(.bottom)
+                .scaledToFit()
                 .allowsHitTesting(false)
+                .layoutPriority(1)
             contentBuilder(isDisplayBabyPhoto: false)
+                .layoutPriority(1)
         }
         .navigationBarBackButtonHidden(true)
         .toolbar {
@@ -31,6 +32,18 @@ struct BirthdayCardView: View {
                 }) {
                     Image(.icBack)
                 }
+            }
+        }
+        .ignoresSafeArea(edges: .vertical)
+        .background {
+            GeometryReader { geometry in
+                Color.clear
+                    .onAppear {
+                        viewModel.setSize(geometry.size)
+                    }
+                    .onChange(of: geometry.size) { _, newValue in
+                        viewModel.setSize(newValue)
+                    }
             }
         }
     }
@@ -47,7 +60,10 @@ struct BirthdayCardView: View {
                 .opacity(isDisplayBabyPhoto ? 0 : 1)
                 .padding(.top, 15)
             Button {
-                viewModel.shareImage()
+                viewModel.setCameraButtonVisible(false)
+                let image = self.body.snapshot()
+                viewModel.shareSnapshot(snapshot: image)
+                viewModel.setCameraButtonVisible(true)
             } label: {
                 HStack(spacing: .zero) {
                     Text(StringConstants.shareTheNews)

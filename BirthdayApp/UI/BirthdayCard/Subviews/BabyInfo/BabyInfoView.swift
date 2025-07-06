@@ -16,24 +16,14 @@ struct BabyInfoView: View {
             Text("TODAY \(viewModel.state.name.uppercased()) IS")
                 .font(.system(size: 21, weight: .semibold))
                 .foregroundStyle(.text)
+                .layoutPriority(0)
                 .multilineTextAlignment(.center)
-                .frame(width: viewModel.state.width)
             HStack(spacing: 22) {
                 Image("left_swirls")
                 Image("\(viewModel.state.age)")
                 Image("right_swirls")
             }
-            .background {
-                GeometryReader { geometry in
-                    Color.clear
-                        .onAppear {
-                            viewModel.setWidth(geometry.size.width)
-                        }
-                        .onChange(of: geometry.size.width) { _, newValue in
-                            viewModel.setWidth(newValue)
-                        }
-                }
-            }
+            .layoutPriority(1)
             Text(viewModel.prepareBottomAgeText())
                 .font(.system(size: 21, weight: .semibold))
                 .foregroundStyle(.text)
