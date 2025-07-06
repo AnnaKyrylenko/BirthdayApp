@@ -19,6 +19,7 @@ struct BabyInfoView: View {
                 .layoutPriority(0)
                 .lineLimit(nil)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .frame(maxWidth: 200)
             HStack(spacing: 22) {
                 Image("left_swirls")
