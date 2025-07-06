@@ -13,7 +13,7 @@ struct BirthdayCardView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             viewModel.state.selectedTheme.backgroundColor
-                .layoutPriority(0)
+                .layoutPriority(1)
             contentBuilder(isDisplayBabyPhoto: true)
                 .layoutPriority(1)
             viewModel.state.selectedTheme.maskImage
@@ -24,6 +24,7 @@ struct BirthdayCardView: View {
             contentBuilder(isDisplayBabyPhoto: false)
                 .layoutPriority(1)
         }
+        .ignoresSafeArea()
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -32,18 +33,6 @@ struct BirthdayCardView: View {
                 }) {
                     Image(.icBack)
                 }
-            }
-        }
-        .ignoresSafeArea(edges: .vertical)
-        .background {
-            GeometryReader { geometry in
-                Color.clear
-                    .onAppear {
-                        viewModel.setSize(geometry.size)
-                    }
-                    .onChange(of: geometry.size) { _, newValue in
-                        viewModel.setSize(newValue)
-                    }
             }
         }
     }
@@ -60,10 +49,10 @@ struct BirthdayCardView: View {
                 .opacity(isDisplayBabyPhoto ? 0 : 1)
                 .padding(.top, 15)
             Button {
-                viewModel.setCameraButtonVisible(false)
+                viewModel.setButtonsVisible(false)
                 let image = self.body.snapshot()
                 viewModel.shareSnapshot(snapshot: image)
-                viewModel.setCameraButtonVisible(true)
+                viewModel.setButtonsVisible(true)
             } label: {
                 HStack(spacing: .zero) {
                     Text(StringConstants.shareTheNews)
@@ -75,7 +64,7 @@ struct BirthdayCardView: View {
                 .background(Color.mainButton)
                 .clipShape(Capsule())
             }
-            .opacity(isDisplayBabyPhoto ? 0 : 1)
+            .opacity(isDisplayBabyPhoto || viewModel.state.isNeedToHideShareButton ? 0 : 1)
             .padding(.vertical, Constants.shareButtonVerticalPadding)
         }
     }

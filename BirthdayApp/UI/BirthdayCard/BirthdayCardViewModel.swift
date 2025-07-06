@@ -79,7 +79,7 @@ class BirthdayCardViewModel {
     struct State {
         var selectedTheme: Theme = { Theme.allCases.randomElement() ?? .blue }()
         var baby: Baby
-        var viewSize: CGSize = .zero
+        var isNeedToHideShareButton: Bool = false
         
         init(baby: Baby) {
             self.baby = baby
@@ -122,15 +122,12 @@ class BirthdayCardViewModel {
         shareDelegate?.shareSnapshot(snapshot)
     }
     
-    func setCameraButtonVisible(_ visible: Bool) {
+    func setButtonsVisible(_ visible: Bool) {
         babyPhotoViewModel?.setIsCameraIconVisible(visible)
+        state.isNeedToHideShareButton = !visible
     }
     
     func setNewPhoto(_ photo: Image?) {
         babyPhotoViewModel?.setBabyPhoto(photo)
-    }
-    
-    func setSize(_ size: CGSize) {
-        state.viewSize = size
     }
 }

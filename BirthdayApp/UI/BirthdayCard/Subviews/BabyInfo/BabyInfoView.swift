@@ -17,7 +17,9 @@ struct BabyInfoView: View {
                 .font(.system(size: 21, weight: .semibold))
                 .foregroundStyle(.text)
                 .layoutPriority(0)
+                .lineLimit(nil)
                 .multilineTextAlignment(.center)
+                .frame(maxWidth: 200)
             HStack(spacing: 22) {
                 Image("left_swirls")
                 Image("\(viewModel.state.age)")
